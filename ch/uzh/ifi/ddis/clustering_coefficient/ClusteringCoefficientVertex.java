@@ -1,11 +1,6 @@
 package ch.uzh.ifi.ddis.clustering_coefficient;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import com.signalcollect.Edge;
 import com.signalcollect.javaapi.DataGraphVertex;
 
 /**
