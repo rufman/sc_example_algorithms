@@ -47,7 +47,9 @@ public class BetweennessCentralityVertex
 				for (Set<Integer> key : element.keySet()) {
 					if (oldState.get(key) == null) {
 						//newState.put(key, element.get(key));
-												
+						if (element.get(key).contains(this.id())) {
+							newState.put(key, element.get(key));
+						}
 						for (Integer n : neighbors){
 							if (element.get(key).contains(n)) {
 								int new_vertex = -1;

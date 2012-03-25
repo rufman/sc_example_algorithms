@@ -107,8 +107,10 @@ public class BetweennessCentrality {
         
         graph.addEdge(new StateForwarderEdge<Integer, Integer>(3,5));
         graph.addEdge(new StateForwarderEdge<Integer, Integer>(3,2));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(3,4));
         
         graph.addEdge(new StateForwarderEdge<Integer, Integer>(4,2));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(4,3));
         
         graph.addEdge(new StateForwarderEdge<Integer, Integer>(5,6));
         graph.addEdge(new StateForwarderEdge<Integer, Integer>(5,3));
