@@ -92,8 +92,7 @@ public class StructuralCohesion {
 	    graph.addEdge(new StateForwarderEdge<Integer, Integer>(15,13));
 	    
 	    ExecutionInformation stats = graph.execute(ExecutionConfiguration
- 				.withExecutionMode(ExecutionMode.Synchronous()).withStepsLimit(
- 						2));
+				.withExecutionMode(ExecutionMode.Synchronous()));
 	    
 	    //ExecutionInformation stats = graph.execute();
 	    System.out.println(stats);
