@@ -121,6 +121,19 @@ public class BetweennessCentrality {
         
         System.out.println(stats);
         
+        //get global shortest paths
+        final HashMap<Set<Integer>, Set<Integer>> global_shortest_paths = new HashMap<Set<Integer>, Set<Integer>>();
+        graph.foreachVertex(FunUtil.convert(new VertexCommand(){
+            public void f(Vertex v) {
+            	HashMap<Set<Integer>, Set<Integer>> v_state = (HashMap) v.state();
+            	for (Set<Integer> key : v_state.keySet()){
+            		if (!global_shortest_paths.containsKey(key) && key.size() > 1) {
+            			global_shortest_paths.put(key, v_state.get(key));
+                	}
+            	}
+            }
+        }));
+        
         //print the state of every vertex in the graph.
         graph.foreachVertex(FunUtil.convert(new VertexCommand(){
             public void f(Vertex v) {
@@ -128,6 +141,27 @@ public class BetweennessCentrality {
             }
         }));
         
+        //print the state of every vertex in the graph.
+        graph.foreachVertex(FunUtil.convert(new VertexCommand(){
+            public void f(Vertex v) {
+            	HashMap<Set<Integer>, Set<Integer>> v_state = (HashMap) v.state();
+            	int v_on_shortest_path = 0;
+            	int v_global_minus = 0;
+            	
+            	for (Set<Integer> key : global_shortest_paths.keySet()){
+            		if (key.contains(v.id())) {
+            			v_global_minus++;
+            		}else if (global_shortest_paths.get(key).contains(v.id())) {
+            			v_on_shortest_path++;
+            		}
+            	}
+            	float bc = (float) v_on_shortest_path/ (float) (global_shortest_paths.size()-v_global_minus);
+            	System.out.println("Vertex: "+v.id()+" COUNT: "+v_state.size()+" SP: "+v_on_shortest_path+" GL: "+(global_shortest_paths.size()-v_global_minus)+" BC: "+bc);
+            }
+        }));
+                
+        System.out.println(global_shortest_paths.size());
+        System.out.println(global_shortest_paths);
         graph.shutdown();
 	 }
 }
