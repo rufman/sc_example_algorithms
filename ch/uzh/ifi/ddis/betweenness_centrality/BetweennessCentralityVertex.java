@@ -22,15 +22,15 @@ import com.signalcollect.javaapi.DataGraphVertex;
  */
 public class BetweennessCentralityVertex
 		extends
-		DataGraphVertex<Integer, HashMap<PathKey,PathValue>, HashMap<PathKey,PathValue>> {
+		DataGraphVertex<Integer, HashMap<Set<Integer>,PathValue>, HashMap<Set<Integer>,PathValue>> {
 	
-	public BetweennessCentralityVertex(Integer id, HashMap<PathKey,PathValue> state){
+	public BetweennessCentralityVertex(Integer id, HashMap<Set<Integer>,PathValue> state){
 		super(id, state);
 	}
 
-	public HashMap<PathKey,PathValue> collect(HashMap<PathKey,PathValue> oldState, 
-													  Iterable<HashMap<PathKey,PathValue>> mostRecentSignals){
-		HashMap<PathKey,PathValue> newState = (HashMap<PathKey,PathValue>) ((HashMap) oldState).clone();
+	public HashMap<Set<Integer>,PathValue> collect(HashMap<Set<Integer>,PathValue> oldState, 
+													  Iterable<HashMap<Set<Integer>,PathValue>> mostRecentSignals){
+		HashMap<Set<Integer>,PathValue> newState = (HashMap<Set<Integer>,PathValue>) ((HashMap) oldState).clone();
 		
 		// Find neighbors
 		Set<Integer> neighbors = new HashSet<Integer>();
@@ -43,16 +43,57 @@ public class BetweennessCentralityVertex
 			 }
 		}
 		
-		for (HashMap<PathKey,PathValue> signal : mostRecentSignals) {
-				for (PathKey key : signal.keySet()) {
+		for (HashMap<Set<Integer>,PathValue> signal : mostRecentSignals) {
+				for (Set<Integer> key : signal.keySet()) {
 					if (oldState.get(key) == null) {
 						PathValue value = signal.get(key);
 						if (value.getPath().contains(this.id())) {
 							newState.put(key, signal.get(key));
 						}
 						for (Integer n : neighbors){
-							if (value.getPath().contains(n)) {							
-								if (n.equals(key.getSourceId()) && n.equals(key.getTargetId())) {
+							if (value.getPath().contains(n)) {
+								int new_vertex = -1;
+								Iterator<Integer> kit = key.iterator();
+								int start_loop = 0;
+								while (kit.hasNext()) {
+									int next_kel = kit.next();
+									if (!neighbors.contains(next_kel)) {
+										new_vertex = next_kel;
+									}
+									start_loop++;
+								}
+								
+								if (start_loop != 2) { 
+									Set<Integer> new_key = new HashSet<Integer>();
+									new_key.add(this.id());
+									new_key.add(n);
+									PathValue new_value = new PathValue();
+									Set<Integer> path = new HashSet<Integer>();
+									path.add(this.id());
+									path.add(n);
+									new_value.setKey(new_key);
+									new_value.setPath(path);
+									new_value.setDistance(value.getDistance()+1);
+									newState.put(new_key, new_value);
+								} else if (new_vertex == -1){
+									newState.put(key, signal.get(key));
+								} else {
+									Set<Integer> new_key = new HashSet<Integer>();
+									new_key.add(this.id());
+									new_key.add(new_vertex);
+									PathValue new_value = new PathValue();
+									Set<Integer> path = new HashSet<Integer>();
+									path.add(this.id());
+									for (Integer i : value.getPath()){
+										path.add(i); 
+									}
+									new_value.setKey(new_key);
+									new_value.setPath(path);
+									new_value.setDistance(value.getDistance()+1);
+									newState.put(new_key, new_value);
+								}
+								
+								/*if (n.equals(key.getSourceId()) && n.equals(key.getTargetId())) {
 									PathKey new_key = new PathKey();
 									new_key.setSourceId(this.id());
 									new_key.setTargetId(n);
@@ -89,7 +130,7 @@ public class BetweennessCentralityVertex
 										new_value.setDistance(value.getDistance()+1);
 										newState.put(new_key, new_value);
 									}
-								}
+								}*/
 							}
 						}
 					} else if(oldState.get(key).getDistance() >= signal.get(key).getDistance()) {

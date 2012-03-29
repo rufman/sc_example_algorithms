@@ -32,10 +32,10 @@ public class BetweennessCentrality {
 		Graph graph = GraphBuilder.build();
         
 		for(int i=1;i<=6;i++){
-			HashMap<PathKey,PathValue> hm = new HashMap<PathKey,PathValue>();
-			PathKey key = new PathKey();
-			key.setSourceId(i);
-			key.setTargetId(i);
+			HashMap<Set<Integer>,PathValue> hm = new HashMap<Set<Integer>,PathValue>();
+			Set<Integer> key = new HashSet<Integer>();
+			key.add(i);
+			key.add(i);
 			PathValue value = new PathValue();
 	        value.setKey(key);
 	        Set<Integer> path = new HashSet<Integer>();
@@ -69,7 +69,7 @@ public class BetweennessCentrality {
         System.out.println(stats);
         
         //get global shortest paths
-        final HashMap<Set<Integer>, Set<Integer>> globalShortestPaths = graph.aggregate(new GetGlobalShortestPaths());
+        final HashMap<Set<Integer>,PathValue> globalShortestPaths = graph.aggregate(new GetGlobalShortestPaths());
         System.out.println("Global Shortest Paths: "+globalShortestPaths);
         System.out.println("Global Shortest Paths Size: "+globalShortestPaths.size());
         
@@ -90,7 +90,7 @@ public class BetweennessCentrality {
             	for (Set<Integer> key : globalShortestPaths.keySet()){
             		if (key.contains(v.id())) {
             			v_global_minus++;
-            		}else if (globalShortestPaths.get(key).contains(v.id())) {
+            		}else if (globalShortestPaths.get(key).getPath().contains(v.id())) {
             			v_on_shortest_path++;
             		}
             	}
@@ -108,26 +108,26 @@ public class BetweennessCentrality {
 	
 	
 	//Inner class to aggregate global shortest paths in the graph
-	private class GetGlobalShortestPaths implements AggregationOperation<HashMap<Set<Integer>, Set<Integer>>> {
+	private class GetGlobalShortestPaths implements AggregationOperation<HashMap<Set<Integer>,PathValue>> {
 
 		@Override
-		public HashMap<Set<Integer>, Set<Integer>> aggregate(
-				HashMap<Set<Integer>, Set<Integer>> arg0,
-				HashMap<Set<Integer>, Set<Integer>> arg1) {
-			HashMap<Set<Integer>, Set<Integer>> state0 = (HashMap<Set<Integer>, Set<Integer>>) ((HashMap) arg0).clone();
-			HashMap<Set<Integer>, Set<Integer>> state1 = (HashMap<Set<Integer>, Set<Integer>>) ((HashMap) arg1).clone();
+		public HashMap<Set<Integer>,PathValue> aggregate(
+				HashMap<Set<Integer>,PathValue> arg0,
+				HashMap<Set<Integer>,PathValue> arg1) {
+			HashMap<Set<Integer>,PathValue> state0 = (HashMap<Set<Integer>,PathValue>) ((HashMap) arg0).clone();
+			HashMap<Set<Integer>,PathValue> state1 = (HashMap<Set<Integer>,PathValue>) ((HashMap) arg1).clone();
 			state0.putAll(state1);
 			return state0;
 		}
 
 		@Override
-		public HashMap<Set<Integer>, Set<Integer>> extract(Vertex arg0) {
-			return (HashMap<Set<Integer>, Set<Integer>>) ((HashMap) arg0.state()).clone();
+		public HashMap<Set<Integer>,PathValue> extract(Vertex arg0) {
+			return (HashMap<Set<Integer>,PathValue>) ((HashMap) arg0.state()).clone();
 		}
 
 		@Override
-		public HashMap<Set<Integer>, Set<Integer>> neutralElement() {
-			return new HashMap<Set<Integer>, Set<Integer>>();
+		public HashMap<Set<Integer>,PathValue> neutralElement() {
+			return new HashMap<Set<Integer>,PathValue>();
 		}
 
 	}
