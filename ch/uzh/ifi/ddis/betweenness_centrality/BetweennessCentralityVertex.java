@@ -2,8 +2,8 @@
  *
  */
 package ch.uzh.ifi.ddis.betweenness_centrality;
-import java.util.Arrays;
 
+import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.signalcollect.Edge;
+import com.signalcollect.EdgeId;
 import com.signalcollect.javaapi.DataGraphVertex;
 
 /**
@@ -73,7 +74,7 @@ public class BetweennessCentralityVertex
 									path.add(n);
 									new_value.setKey(new_key);
 									new_value.setPath(path);
-									new_value.setDistance(value.getDistance()+1);
+									new_value.setDistance(value.getDistance());
 									newState.put(new_key, new_value);
 								} else if (new_vertex == -1){
 									newState.put(key, signal.get(key));
@@ -89,48 +90,9 @@ public class BetweennessCentralityVertex
 									}
 									new_value.setKey(new_key);
 									new_value.setPath(path);
-									new_value.setDistance(value.getDistance()+1);
+									new_value.setDistance(value.getDistance());
 									newState.put(new_key, new_value);
 								}
-								
-								/*if (n.equals(key.getSourceId()) && n.equals(key.getTargetId())) {
-									PathKey new_key = new PathKey();
-									new_key.setSourceId(this.id());
-									new_key.setTargetId(n);
-									PathValue new_value = new PathValue();
-									Set<Integer> path = new HashSet<Integer>();
-									path.add(this.id());
-									path.add(n);
-									new_value.setKey(new_key);
-									new_value.setPath(path);
-									new_value.setDistance(value.getDistance()+1);
-									newState.put(new_key, new_value);
-								} else {
-									int new_vertex = -1;
-									if (!n.equals(key.getSourceId()) && n.equals(key.getTargetId())) {
-										new_vertex = key.getSourceId();
-									} else if (!n.equals(key.getTargetId()) && n.equals(key.getSourceId())) {
-										new_vertex = key.getTargetId();
-									} else {
-										newState.put(key, signal.get(key));
-									}
-									
-									if (new_vertex != -1){
-										PathKey new_key = new PathKey();
-										new_key.setSourceId(this.id());
-										new_key.setTargetId(new_vertex);
-										PathValue new_value = new PathValue();
-										Set<Integer> path = new HashSet<Integer>();
-										path.add(this.id());
-										for (Integer i : value.getPath()){
-											path.add(i); 
-										}
-										new_value.setKey(new_key);
-										new_value.setPath(path);
-										new_value.setDistance(value.getDistance()+1);
-										newState.put(new_key, new_value);
-									}
-								}*/
 							}
 						}
 					} else if(oldState.get(key).getDistance() >= signal.get(key).getDistance()) {

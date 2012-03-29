@@ -35,7 +35,6 @@ public class BetweennessCentrality {
 			HashMap<Set<Integer>,PathValue> hm = new HashMap<Set<Integer>,PathValue>();
 			Set<Integer> key = new HashSet<Integer>();
 			key.add(i);
-			key.add(i);
 			PathValue value = new PathValue();
 	        value.setKey(key);
 	        Set<Integer> path = new HashSet<Integer>();

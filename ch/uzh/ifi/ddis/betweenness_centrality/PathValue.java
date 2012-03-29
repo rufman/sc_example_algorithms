@@ -17,7 +17,7 @@ import java.util.Set;
 public class PathValue implements Serializable{
 	private Set<Integer> key;
 	private Set<Integer> path;
-	private float distance;
+	private double distance;
 	
 	public PathValue() {
 		key = new HashSet<Integer>();
@@ -60,7 +60,7 @@ public class PathValue implements Serializable{
 		return path;
 	}
 	
-	public float getDistance(){
+	public double getDistance(){
 		return distance;
 	}
 
@@ -72,7 +72,7 @@ public class PathValue implements Serializable{
 		this.path = path;
 	}
 	
-	public void setDistance(float distance){
+	public void setDistance(double distance){
 		this.distance = distance;
 	}
 	
