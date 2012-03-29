@@ -7,9 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.signalcollect.Edge;
 import com.signalcollect.ExecutionInformation;
+import com.signalcollect.interfaces.AggregationOperation;
 import com.signalcollect.Graph;
+import com.signalcollect.ReduceStatesOperation;
 import com.signalcollect.StateForwarderEdge;
 import com.signalcollect.Vertex;
 import com.signalcollect.configuration.ExecutionMode;
@@ -26,8 +27,9 @@ import com.signalcollect.javaapi.VertexCommand;
  * Package: ch.uzh.ifi.ddis.betweenness_centrality
  */
 public class BetweennessCentrality {
-	public static void main(String[] args) {
-        Graph graph = GraphBuilder.build();
+	
+	public void execute_graph(){
+		Graph graph = GraphBuilder.build();
         
         HashMap<Set<Integer>,Set<Integer>> l1 = new HashMap<Set<Integer>,Set<Integer>>();
         Set<Integer> l1_key = new HashSet<Integer>();
@@ -122,17 +124,9 @@ public class BetweennessCentrality {
         System.out.println(stats);
         
         //get global shortest paths
-        final HashMap<Set<Integer>, Set<Integer>> global_shortest_paths = new HashMap<Set<Integer>, Set<Integer>>();
-        graph.foreachVertex(FunUtil.convert(new VertexCommand(){
-            public void f(Vertex v) {
-            	HashMap<Set<Integer>, Set<Integer>> v_state = (HashMap) v.state();
-            	for (Set<Integer> key : v_state.keySet()){
-            		if (!global_shortest_paths.containsKey(key) && key.size() > 1) {
-            			global_shortest_paths.put(key, v_state.get(key));
-                	}
-            	}
-            }
-        }));
+        final HashMap<Set<Integer>, Set<Integer>> globalShortestPaths = graph.aggregate(new GetGlobalShortestPaths());
+        System.out.println(globalShortestPaths);
+        System.out.println(globalShortestPaths.size());
         
         //print the state of every vertex in the graph.
         graph.foreachVertex(FunUtil.convert(new VertexCommand(){
@@ -148,20 +142,48 @@ public class BetweennessCentrality {
             	int v_on_shortest_path = 0;
             	int v_global_minus = 0;
             	
-            	for (Set<Integer> key : global_shortest_paths.keySet()){
+            	for (Set<Integer> key : globalShortestPaths.keySet()){
             		if (key.contains(v.id())) {
             			v_global_minus++;
-            		}else if (global_shortest_paths.get(key).contains(v.id())) {
+            		}else if (globalShortestPaths.get(key).contains(v.id())) {
             			v_on_shortest_path++;
             		}
             	}
-            	float bc = (float) v_on_shortest_path/ (float) (global_shortest_paths.size()-v_global_minus);
-            	System.out.println("Vertex: "+v.id()+" COUNT: "+v_state.size()+" SP: "+v_on_shortest_path+" GL: "+(global_shortest_paths.size()-v_global_minus)+" BC: "+bc);
+            	float bc = (float) v_on_shortest_path/ (float) (globalShortestPaths.size()-v_global_minus);
+            	System.out.println("Vertex: "+v.id()+" COUNT: "+v_state.size()+" SP: "+v_on_shortest_path+" GL: "+(globalShortestPaths.size()-v_global_minus)+" BC: "+bc);
             }
         }));
-                
-        System.out.println(global_shortest_paths.size());
-        System.out.println(global_shortest_paths);
         graph.shutdown();
-	 }
+	}
+	
+	public static void main(String[] args) {
+        BetweennessCentrality bc = new BetweennessCentrality();
+        bc.execute_graph();
+	}
+	
+	private class GetGlobalShortestPaths implements AggregationOperation<HashMap<Set<Integer>, Set<Integer>>> {
+
+		@Override
+		public HashMap<Set<Integer>, Set<Integer>> aggregate(
+				HashMap<Set<Integer>, Set<Integer>> arg0,
+				HashMap<Set<Integer>, Set<Integer>> arg1) {
+			HashMap<Set<Integer>, Set<Integer>> state0 = (HashMap<Set<Integer>, Set<Integer>>) ((HashMap) arg0).clone();
+			HashMap<Set<Integer>, Set<Integer>> state1 = (HashMap<Set<Integer>, Set<Integer>>) ((HashMap) arg1).clone();
+			state0.putAll(state1);
+			return state0;
+		}
+
+		@Override
+		public HashMap<Set<Integer>, Set<Integer>> extract(Vertex arg0) {
+			// TODO Auto-generated method stub
+			return (HashMap<Set<Integer>, Set<Integer>>) ((HashMap) arg0.state()).clone();
+		}
+
+		@Override
+		public HashMap<Set<Integer>, Set<Integer>> neutralElement() {
+			// TODO Auto-generated method stub
+			return new HashMap<Set<Integer>, Set<Integer>>();
+		}
+
+	}
 }
