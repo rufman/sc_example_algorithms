@@ -1,7 +1,7 @@
 /**
  *
  */
-package ch.uzh.ifi.ddis.structural_cohesion;
+package ch.uzh.ifi.ddis.k_core;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,13 +15,13 @@ import com.signalcollect.javaapi.DataGraphVertex;
  * Date: Mar 11, 2012
  * Package: ch.uzh.ifi.ddis.structural_cohesion
  */
-public class StructuralCohesionVertex
+public class KCoreVertex
 		extends
 		DataGraphVertex<Integer, Integer, Integer> {
 	
 	private int threshold;
 	
-	public StructuralCohesionVertex(Integer id, Integer state){
+	public KCoreVertex(Integer id, Integer state){
 		super(id, state);
 		this.threshold = 0;
 	}

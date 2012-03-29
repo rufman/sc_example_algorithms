@@ -1,7 +1,7 @@
 /**
  *
  */
-package ch.uzh.ifi.ddis.structural_cohesion;
+package ch.uzh.ifi.ddis.k_core;
 
 import com.signalcollect.Graph;
 import com.signalcollect.Vertex;
@@ -18,25 +18,25 @@ import com.signalcollect.javaapi.*;
  * Date: Mar 11, 2012
  * Package: ch.uzh.ifi.ddis.structural_cohesion
  */
-public class StructuralCohesion {
+public class KCore {
 	public static void main(String[] args) {
 		Graph graph = GraphBuilder.build();	
 		
-		graph.addVertex(new StructuralCohesionVertex(1, -1));
-		graph.addVertex(new StructuralCohesionVertex(2, -1));
-		graph.addVertex(new StructuralCohesionVertex(3, -1));
-		graph.addVertex(new StructuralCohesionVertex(4, -1));
-		graph.addVertex(new StructuralCohesionVertex(5, -1));
-		graph.addVertex(new StructuralCohesionVertex(6, -1));
-		graph.addVertex(new StructuralCohesionVertex(7, -1));
-		graph.addVertex(new StructuralCohesionVertex(8, -1));
-		graph.addVertex(new StructuralCohesionVertex(9, -1));
-		graph.addVertex(new StructuralCohesionVertex(10, -1));
-		graph.addVertex(new StructuralCohesionVertex(11, -1));
-		graph.addVertex(new StructuralCohesionVertex(12, -1));
-		graph.addVertex(new StructuralCohesionVertex(13, -1));
-		graph.addVertex(new StructuralCohesionVertex(14, -1));
-		graph.addVertex(new StructuralCohesionVertex(15, -1));
+		graph.addVertex(new KCoreVertex(1, -1));
+		graph.addVertex(new KCoreVertex(2, -1));
+		graph.addVertex(new KCoreVertex(3, -1));
+		graph.addVertex(new KCoreVertex(4, -1));
+		graph.addVertex(new KCoreVertex(5, -1));
+		graph.addVertex(new KCoreVertex(6, -1));
+		graph.addVertex(new KCoreVertex(7, -1));
+		graph.addVertex(new KCoreVertex(8, -1));
+		graph.addVertex(new KCoreVertex(9, -1));
+		graph.addVertex(new KCoreVertex(10, -1));
+		graph.addVertex(new KCoreVertex(11, -1));
+		graph.addVertex(new KCoreVertex(12, -1));
+		graph.addVertex(new KCoreVertex(13, -1));
+		graph.addVertex(new KCoreVertex(14, -1));
+		graph.addVertex(new KCoreVertex(15, -1));
 		
 	    
 	    graph.addEdge(new StateForwarderEdge<Integer, Integer>(1,5));

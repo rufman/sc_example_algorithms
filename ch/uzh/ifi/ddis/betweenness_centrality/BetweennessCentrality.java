@@ -125,8 +125,8 @@ public class BetweennessCentrality {
         
         //get global shortest paths
         final HashMap<Set<Integer>, Set<Integer>> globalShortestPaths = graph.aggregate(new GetGlobalShortestPaths());
-        System.out.println(globalShortestPaths);
-        System.out.println(globalShortestPaths.size());
+        System.out.println("Global Shortest Paths: "+globalShortestPaths);
+        System.out.println("Global Shortest Paths Size: "+globalShortestPaths.size());
         
         //print the state of every vertex in the graph.
         graph.foreachVertex(FunUtil.convert(new VertexCommand(){
@@ -161,6 +161,8 @@ public class BetweennessCentrality {
         bc.execute_graph();
 	}
 	
+	
+	//Inner class to aggregate global shortest paths in the graph
 	private class GetGlobalShortestPaths implements AggregationOperation<HashMap<Set<Integer>, Set<Integer>>> {
 
 		@Override
@@ -175,13 +177,11 @@ public class BetweennessCentrality {
 
 		@Override
 		public HashMap<Set<Integer>, Set<Integer>> extract(Vertex arg0) {
-			// TODO Auto-generated method stub
 			return (HashMap<Set<Integer>, Set<Integer>>) ((HashMap) arg0.state()).clone();
 		}
 
 		@Override
 		public HashMap<Set<Integer>, Set<Integer>> neutralElement() {
-			// TODO Auto-generated method stub
 			return new HashMap<Set<Integer>, Set<Integer>>();
 		}
 
