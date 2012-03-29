@@ -46,14 +46,16 @@ public class BetweennessCentralityVertex
 		
 		for (HashMap<Set<Integer>,PathValue> signal : mostRecentSignals) {
 				for (Set<Integer> key : signal.keySet()) {
-					if (oldState.get(key) == null) {
-						PathValue value = signal.get(key);
-						if (value.getPath().contains(this.id())) {
+					if (oldState.get(key) == null) { // only add a new entry if the key from the signal is not key present
+						PathValue value = signal.get(key); // The value associated with the key (path plus distance)
+						if (value.getPath().contains(this.id())) { // Add the key, value pair if the vertex is on the path
 							newState.put(key, signal.get(key));
 						}
 						for (Integer n : neighbors){
+							// Check to see if neighbors are in the signal, in most cases this means new paths will be added
 							if (value.getPath().contains(n)) {
 								int new_vertex = -1;
+								// loop throught the key to find the vertex that is not the neighbor i.e. unknown to the vertex
 								Iterator<Integer> kit = key.iterator();
 								int start_loop = 0;
 								while (kit.hasNext()) {
@@ -64,6 +66,8 @@ public class BetweennessCentralityVertex
 									start_loop++;
 								}
 								
+								// Add the neighboring vertex if the initializing phase is not yet done.
+								// This is the case if the state of the vertesies are still just their own vertex id
 								if (start_loop != 2) { 
 									Set<Integer> new_key = new HashSet<Integer>();
 									new_key.add(this.id());
@@ -76,9 +80,9 @@ public class BetweennessCentralityVertex
 									new_value.setPath(path);
 									new_value.setDistance(value.getDistance());
 									newState.put(new_key, new_value);
-								} else if (new_vertex == -1){
+								} else if (new_vertex == -1){ // pass on paths that might be interesting
 									newState.put(key, signal.get(key));
-								} else {
+								} else { // Adds the path to the unknown vertex
 									Set<Integer> new_key = new HashSet<Integer>();
 									new_key.add(this.id());
 									new_key.add(new_vertex);
@@ -95,7 +99,7 @@ public class BetweennessCentralityVertex
 								}
 							}
 						}
-					} else if(oldState.get(key).getDistance() >= signal.get(key).getDistance()) {
+					} else if(oldState.get(key).getDistance() >= signal.get(key).getDistance()) { // Update the path if a shorter one is found
 						if (oldState.get(key).getPath().size() > signal.get(key).getPath().size()) {
 							newState.put(key, signal.get(key));
 						}

@@ -48,7 +48,7 @@ public class PathValue implements Serializable{
 	
 	@Override
 	public String toString(){
-		return "key: "+key.toString()+"; path: "+path.toString()+"; distance: "+distance;
+		return "path:"+path.toString();
 	}
 	
 	//Getters and Setters
