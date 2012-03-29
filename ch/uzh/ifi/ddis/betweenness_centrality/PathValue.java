@@ -4,7 +4,6 @@
 package ch.uzh.ifi.ddis.betweenness_centrality;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -15,12 +14,12 @@ import java.util.Set;
  * Package: ch.uzh.ifi.ddis.betweenness_centrality
  */
 public class PathValue implements Serializable{
-	private Set<Integer> key;
+	private PathKey key;
 	private Set<Integer> path;
-	private float distance;
+	private double distance;
 	
 	public PathValue() {
-		key = new HashSet<Integer>();
+		key = new PathKey();
 	}
 	
 	@Override
@@ -52,7 +51,7 @@ public class PathValue implements Serializable{
 	}
 	
 	//Getters and Setters
-	public Set<Integer> getKey(){
+	public PathKey getKey(){
 		return key;
 	}
 	
@@ -60,11 +59,11 @@ public class PathValue implements Serializable{
 		return path;
 	}
 	
-	public float getDistance(){
+	public double getDistance(){
 		return distance;
 	}
 
-	public void setKey(Set<Integer> key){
+	public void setKey(PathKey key){
 		this.key = key;
 	}
 	
@@ -72,7 +71,7 @@ public class PathValue implements Serializable{
 		this.path = path;
 	}
 	
-	public void setDistance(float distance){
+	public void setDistance(double distance){
 		this.distance = distance;
 	}
 	

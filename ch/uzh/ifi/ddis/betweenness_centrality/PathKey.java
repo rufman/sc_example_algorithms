@@ -22,14 +22,8 @@ public class PathKey implements Serializable{
 		if (o == null || getClass() != o.getClass()) return false;
 		
 		PathKey that = (PathKey) o;
-		if (that.source_id != null || that.target_id != null){
-			return false;
-		}
-		
-		if ((!source_id.equals(that.source_id) || !source_id.equals(that.target_id)) && 
-			(!target_id.equals(that.source_id) || !target_id.equals(that.target_id)) ){
-			return false;
-		}
+		if (source_id != null ? !source_id.equals(that.source_id) : that.source_id != null) return false;
+		if (target_id != null ? !target_id.equals(that.target_id) : that.target_id != null) return false;
 		
 		return true;
 	}
@@ -37,14 +31,15 @@ public class PathKey implements Serializable{
 	@Override
 	public int hashCode() {
 		int result = 17;
-		result = 37*result + source_id.hashCode() + target_id.hashCode();
+		result = 37*result + source_id.hashCode();
+		result = 37*result + target_id.hashCode();
 		
 		return result;
 	}
 	
 	@Override
 	public String toString(){
-		return source_id.toString()+";"+target_id.toString();
+		return "["+source_id.toString()+";"+target_id.toString()+"]";
 	}
 	
 	//Getters and Setters
