@@ -2,6 +2,7 @@
  *
  */
 package ch.uzh.ifi.ddis.betweenness_centrality;
+import java.util.Arrays;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,15 +22,15 @@ import com.signalcollect.javaapi.DataGraphVertex;
  */
 public class BetweennessCentralityVertex
 		extends
-		DataGraphVertex<Integer, HashMap<Set<Integer>,Set<Integer>>, HashMap<Set<Integer>,Set<Integer>>> {
+		DataGraphVertex<Integer, HashMap<PathKey,PathValue>, HashMap<PathKey,PathValue>> {
 	
-	public BetweennessCentralityVertex(Integer id, HashMap<Set<Integer>,Set<Integer>> state){
+	public BetweennessCentralityVertex(Integer id, HashMap<PathKey,PathValue> state){
 		super(id, state);
 	}
 
-	public HashMap<Set<Integer>,Set<Integer>> collect(HashMap<Set<Integer>,Set<Integer>> oldState, 
-													  Iterable<HashMap<Set<Integer>,Set<Integer>>> mostRecentSignals){
-		HashMap<Set<Integer>,Set<Integer>> newState = (HashMap) ((HashMap) oldState).clone();
+	public HashMap<PathKey,PathValue> collect(HashMap<PathKey,PathValue> oldState, 
+													  Iterable<HashMap<PathKey,PathValue>> mostRecentSignals){
+		HashMap<PathKey,PathValue> newState = (HashMap<PathKey,PathValue>) ((HashMap) oldState).clone();
 		
 		// Find neighbors
 		Set<Integer> neighbors = new HashSet<Integer>();
@@ -42,54 +43,61 @@ public class BetweennessCentralityVertex
 			 }
 		}
 		
-		for (HashMap<Set<Integer>,Set<Integer>> element : mostRecentSignals) {
-			//for (HashMap<Set<Integer>,Set<Integer>> element : signal) {
-				for (Set<Integer> key : element.keySet()) {
+		for (HashMap<PathKey,PathValue> signal : mostRecentSignals) {
+				for (PathKey key : signal.keySet()) {
 					if (oldState.get(key) == null) {
-						//newState.put(key, element.get(key));
-						if (element.get(key).contains(this.id())) {
-							newState.put(key, element.get(key));
+						PathValue value = signal.get(key);
+						if (value.getPath().contains(this.id())) {
+							newState.put(key, signal.get(key));
 						}
 						for (Integer n : neighbors){
-							if (element.get(key).contains(n)) {
-								int new_vertex = -1;
-								Iterator<Integer> kit = key.iterator();
-								int start_loop = 0;
-								while (kit.hasNext()) {
-									int next_kel = kit.next();
-									if (!neighbors.contains(next_kel)) {
-										new_vertex = next_kel;
-									}
-									start_loop++;
-								}
-								if (start_loop != 2) { 
-									Set<Integer> new_key = new HashSet<Integer>();
-									new_key.add(this.id());
-									new_key.add(n);
-									Set<Integer> new_value = new HashSet<Integer>();
-									new_value.add(this.id()); 
-									new_value.add(n);
+							if (value.getPath().contains(n)) {							
+								if (n.equals(key.getSourceId()) && n.equals(key.getTargetId())) {
+									PathKey new_key = new PathKey();
+									new_key.setSourceId(this.id());
+									new_key.setTargetId(n);
+									PathValue new_value = new PathValue();
+									Set<Integer> path = new HashSet<Integer>();
+									path.add(this.id());
+									path.add(n);
+									new_value.setKey(new_key);
+									new_value.setPath(path);
+									new_value.setDistance(value.getDistance()+1);
 									newState.put(new_key, new_value);
-								} else if (new_vertex == -1){
-									newState.put(key, element.get(key));
 								} else {
-									Set<Integer> new_key = new HashSet<Integer>();
-									new_key.add(this.id());
-									new_key.add(new_vertex);
-									Set<Integer> new_value = new HashSet<Integer>();
-									new_value.add(this.id()); 
-									for (Integer i : element.get(key)){
-										new_value.add(i); 
+									int new_vertex = -1;
+									if (!n.equals(key.getSourceId()) && n.equals(key.getTargetId())) {
+										new_vertex = key.getSourceId();
+									} else if (!n.equals(key.getTargetId()) && n.equals(key.getSourceId())) {
+										new_vertex = key.getTargetId();
+									} else {
+										newState.put(key, signal.get(key));
 									}
-									newState.put(new_key, new_value);
+									
+									if (new_vertex != -1){
+										PathKey new_key = new PathKey();
+										new_key.setSourceId(this.id());
+										new_key.setTargetId(new_vertex);
+										PathValue new_value = new PathValue();
+										Set<Integer> path = new HashSet<Integer>();
+										path.add(this.id());
+										for (Integer i : value.getPath()){
+											path.add(i); 
+										}
+										new_value.setKey(new_key);
+										new_value.setPath(path);
+										new_value.setDistance(value.getDistance()+1);
+										newState.put(new_key, new_value);
+									}
 								}
 							}
 						}
-					} else if(oldState.get(key).size() > element.get(key).size()) {
-						newState.put(key, element.get(key));
+					} else if(oldState.get(key).getDistance() >= signal.get(key).getDistance()) {
+						if (oldState.get(key).getPath().size() > signal.get(key).getPath().size()) {
+							newState.put(key, signal.get(key));
+						}
 					}
 				}
-			//}
 	    }
 			
 		return newState;
