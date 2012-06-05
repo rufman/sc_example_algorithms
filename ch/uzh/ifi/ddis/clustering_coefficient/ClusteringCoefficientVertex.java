@@ -39,19 +39,22 @@ public class ClusteringCoefficientVertex extends
 		super(id, state);
 	}
 
-	public void initialize_state(ArrayList<Integer> state) {
-		this.setState(state);
-	}
-
 	/**
 	 * The collect function for the vertex. This sets the state of the vertex,
-	 * so that it represents the immediate neighborhood of the vertex.
+	 * so that it represents the immediate neighborhood of the vertex. The state
+	 * includes the connections to the nodes that the neighbors are connected
+	 * to.
+	 * 
+	 * This is then used to calculate the clustering coefficient. The clustering
+	 * coefficient is calculated globally by going through the whole graph.
 	 */
 	public ArrayList<Integer> collect(ArrayList<Integer> oldState,
 			Iterable<ArrayList<Integer>> mostRecentSignals) {
 		ArrayList<Integer> newState = (ArrayList<Integer>) (((ArrayList<Integer>) oldState)
 				.clone());
 
+		// Get all the neighbors of the vertex and add their neighbors to the
+		// vertex state.
 		for (ArrayList<Integer> neighbors : mostRecentSignals) {
 			for (Integer n : neighbors) {
 				newState.add(n);

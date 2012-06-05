@@ -48,12 +48,12 @@ public class BetweennessCentralityVertex
 	}
 
 	/**
-	 * The collect method that finds the shortest paths from all vertesies to
-	 * all others. The vertex state represents all shortests paths of the vertex
-	 * to all other vertesies in the graph.
+	 * The collect method that finds the shortest paths from all vertices to all
+	 * others. The vertex state represents all shortest paths of the vertex to
+	 * all other vertices in the graph.
 	 * 
 	 * The vertex passes on changes to paths to its neighbors, who then
-	 * determine if this information is relevent to their context.
+	 * determine if this information is relevant to their context.
 	 */
 	public HashMap<Set<Integer>, PathValue> collect(
 			HashMap<Set<Integer>, PathValue> oldState,
@@ -75,16 +75,13 @@ public class BetweennessCentralityVertex
 
 		for (HashMap<Set<Integer>, PathValue> signal : mostRecentSignals) {
 			for (Set<Integer> key : signal.keySet()) {
-				if (oldState.get(key) == null) { // only add a new entry if the
-													// key from the signal is
-													// not key present
-					PathValue value = signal.get(key); // The value associated
-														// with the key (path
-														// plus distance)
-					if (value.getPath().contains(this.id())) { // Add the key,
-																// value pair if
-																// the vertex is
-																// on the path
+				// only add a new entry if the key from the signal is not key
+				// present
+				if (oldState.get(key) == null) {
+					// The value associated with the key (path plus distance)
+					PathValue value = signal.get(key);
+					// Add the key, value pair if the vertex is on the path
+					if (value.getPath().contains(this.id())) { 
 						newState.put(key, signal.get(key));
 					}
 					for (Integer n : neighbors) {

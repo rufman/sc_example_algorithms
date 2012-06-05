@@ -16,9 +16,6 @@
  */
 package ch.uzh.ifi.ddis.k_core;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 import com.signalcollect.javaapi.DataGraphVertex;
 
 /**
@@ -55,7 +52,8 @@ public class KCoreVertex extends DataGraphVertex<Integer, Integer, Integer> {
 	public Integer collect(Integer oldState, Iterable<Integer> mostRecentSignals) {
 		int count = 0;
 		// count the number of neighbors above the threshold. These are the
-		// neighbors relevant to the computation at this step
+		// neighbors relevant to the computation at this step.
+		// Always count neighbors if the graph is in the initial state (-1)
 		for (Integer neighbor_degree : mostRecentSignals) {
 			if (neighbor_degree > threshold || neighbor_degree == -1) {
 				count++;
@@ -63,7 +61,11 @@ public class KCoreVertex extends DataGraphVertex<Integer, Integer, Integer> {
 		}
 
 		// new threshold is one k core higher.
-		// The new state of this vertex is the 
+		// The new state of this vertex is the number of neighbors with a k core
+		// higher than the threshold only this is higher than the current
+		// threshold.
+		// Otherwise the state is the current threshold. Analogously this means
+		// that this vertex is no longer relevant to the computation.
 		if (count > threshold) {
 			oldState = count;
 			threshold++;

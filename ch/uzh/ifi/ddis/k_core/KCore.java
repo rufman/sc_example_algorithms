@@ -18,7 +18,6 @@ package ch.uzh.ifi.ddis.k_core;
 
 import com.signalcollect.Graph;
 import com.signalcollect.Vertex;
-import com.signalcollect.Edge;
 import com.signalcollect.ExecutionInformation;
 import com.signalcollect.StateForwarderEdge;
 import com.signalcollect.configuration.ExecutionMode;
@@ -27,7 +26,7 @@ import com.signalcollect.javaapi.*;
 /**
  * @author: Stephane Rufer The University of Z&uuml;rich<br>
  * 
- *          Date: Mar 11, 2012 Package: ch.uzh.ifi.ddis.structural_cohesion
+ *          Date: Mar 11, 2012 Package: ch.uzh.ifi.ddis.k_core
  *          
  *          Example Graph:
  *          
@@ -64,6 +63,7 @@ public class KCore {
 	public static void main(String[] args) {
 		Graph graph = GraphBuilder.build();
 
+		// initialize the vertices
 		graph.addVertex(new KCoreVertex(1, -1));
 		graph.addVertex(new KCoreVertex(2, -1));
 		graph.addVertex(new KCoreVertex(3, -1));
@@ -80,6 +80,7 @@ public class KCore {
 		graph.addVertex(new KCoreVertex(14, -1));
 		graph.addVertex(new KCoreVertex(15, -1));
 
+		// initialize the edges
 		graph.addEdge(new StateForwarderEdge<Integer, Integer>(1, 5));
 		graph.addEdge(new StateForwarderEdge<Integer, Integer>(2, 5));
 		graph.addEdge(new StateForwarderEdge<Integer, Integer>(3, 5));
@@ -135,7 +136,7 @@ public class KCore {
 		ExecutionInformation stats = graph.execute(ExecutionConfiguration
 				.withExecutionMode(ExecutionMode.Synchronous()));
 
-		// ExecutionInformation stats = graph.execute();
+		// stats for the purpose of debugging 
 		System.out.println(stats);
 
 		// print the state of every vertex in the graph. The state is the k core
