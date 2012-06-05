@@ -28,6 +28,37 @@ import com.signalcollect.javaapi.*;
  * @author: Stephane Rufer The University of Z&uuml;rich<br>
  * 
  *          Date: Mar 11, 2012 Package: ch.uzh.ifi.ddis.structural_cohesion
+ *          
+ *          Example Graph:
+ *          
+ *               4
+ *        	   3 |
+ *           2  \|  
+ *            \__5_____6___15
+ *               |    /|\  /|\
+ *               1   7 | \/ | 13__14
+ *             	     | | /\ | /
+ *                   \_|/  \|/
+ *                     8____12____
+ *                      \_ _/     |
+ *                        9__10__11
+ *                        
+ * 			 Kcore Results per Vertex:
+ * 				- 1: 1
+ * 				- 2: 1
+ * 				- 3: 1
+ * 				- 4: 1
+ * 				- 5: 1
+ * 				- 6: 3
+ * 				- 7: 2
+ * 				- 8: 3
+ * 				- 9: 2
+ * 				- 10: 2
+ * 				- 11: 2
+ * 				- 12: 3
+ * 				- 13: 2
+ * 				- 14: 1
+ * 				- 15: 3
  */
 public class KCore {
 	public static void main(String[] args) {

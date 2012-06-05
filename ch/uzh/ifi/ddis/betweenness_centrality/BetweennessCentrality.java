@@ -33,11 +33,24 @@ import com.signalcollect.javaapi.GraphBuilder;
 import com.signalcollect.javaapi.VertexCommand;
 
 /**
- * @author: Stephane Rufer
- * The University of Z&uuml;rich<br>
+ * @author: Stephane Rufer The University of Z&uuml;rich<br>
  * 
- * Date: Mar 11, 2012
- * Package: ch.uzh.ifi.ddis.betweenness_centrality
+ *          Date: Mar 11, 2012 Package: ch.uzh.ifi.ddis.betweenness_centrality
+ *          
+ *          Example Graph:
+ *          
+ *          		 4
+ *                  /|   
+ *                 / |
+ *            1___2__3__5__6
+ *            
+ *          Betweenness Centrality Result per Vertex:
+ *          	- 1: 0
+ *          	- 2: 0.26668
+ *          	- 3: 0.4
+ *          	- 4: 0
+ *          	- 5: 0.33334
+ *          	- 6: 0 
  */
 public class BetweennessCentrality {
 	
