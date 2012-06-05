@@ -95,23 +95,6 @@ public class ClusteringCoefficient {
  				.withExecutionMode(ExecutionMode.Synchronous()).withStepsLimit(
  						2));
          
-         /*graph.foreachVertex(FunUtil.convert(new VertexCommand(){
-        		 public void f(Vertex v) {
-        			 ArrayList<Integer> list = new ArrayList<Integer>();
-        			 scala.collection.Iterator<scala.collection.Iterable<Edge>> it = v.getOutgoingEdges().iterator();
-        			 while (it.hasNext()){
-        				 scala.collection.Iterator<Edge> eit = it.next().iterator();
-        				 while (eit.hasNext()){
-        					 Edge e = eit.next();
-        					 list.add((Integer)e.id().targetId());
-        				 }
-        			 }
-        			 //list.add((Integer)v.id());
-        			 ClusteringCoefficientVertex v2 = (ClusteringCoefficientVertex) v;
-        			 v2.initialize_state(list); 
-        		 }
-         }));*/
-         
          //ExecutionInformation stats = graph.execute();
          System.out.println(stats);
          
@@ -122,12 +105,14 @@ public class ClusteringCoefficient {
              }
          }));
          
+         // calculate the clustering coefficient by going through the whole graph
          graph.foreachVertex(FunUtil.convert(new VertexCommand(){
     		 public void f(Vertex v) {
     			 ArrayList<Integer> v_state = (ArrayList<Integer>) v.state();
     			 ArrayList<Integer> n_state = new ArrayList<Integer>();
     			 ArrayList<Integer> neighbors = new ArrayList<Integer>();
     			 
+    			 //find all neighbors
     			 scala.collection.Iterator<scala.collection.Iterable<Edge>> it = v.getOutgoingEdges().iterator();
     			 while (it.hasNext()){
     				 scala.collection.Iterator<Edge> eit = it.next().iterator();
@@ -136,6 +121,7 @@ public class ClusteringCoefficient {
     					 neighbors.add((Integer)e.id().targetId());
     				 }
     			 }
+    			 // find completed edges among neighbors
     			 n_state = (ArrayList<Integer>) v_state.clone();
     			 int count = 0;
     			 for (Integer v_i : v_state){
@@ -145,8 +131,8 @@ public class ClusteringCoefficient {
 	    				 }
     				 }
     			 }
-    			 float possible_edges = (neighbors.size()-1)*neighbors.size()/2;
-    			 float completed_edges = (count-neighbors.size()*2)/2;
+    			 float possible_edges = (neighbors.size()-1)*neighbors.size()/2; // all possible edges in the neighborhood of the vertex
+    			 float completed_edges = (count-neighbors.size()*2)/2; // all edges that are completed
     			 float clustering_coefficient = completed_edges/possible_edges;
     			 System.out.println("vertex: "+v.id()
     					 			+",\tCompleted Edges: "+completed_edges
