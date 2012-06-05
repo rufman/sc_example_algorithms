@@ -32,10 +32,9 @@ public class BetweennessCentrality {
 		Graph graph = GraphBuilder.build();
         
 		for(int i=1;i<=6;i++){
-			HashMap<PathKey,PathValue> hm = new HashMap<PathKey,PathValue>();
-			PathKey key = new PathKey();
-			key.setSourceId(i);
-			key.setTargetId(i);
+			HashMap<Set<Integer>,PathValue> hm = new HashMap<Set<Integer>,PathValue>();
+			Set<Integer> key = new HashSet<Integer>();
+			key.add(i);
 			PathValue value = new PathValue();
 	        value.setKey(key);
 	        Set<Integer> path = new HashSet<Integer>();
@@ -46,31 +45,30 @@ public class BetweennessCentrality {
 	        graph.addVertex(new BetweennessCentralityVertex(i, hm));
 		}
         
-        graph.addEdge(new StateForwarderEdge(1,2));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(1,2));
         
-        graph.addEdge(new StateForwarderEdge(2,3));
-        graph.addEdge(new StateForwarderEdge(2,1));
-        graph.addEdge(new StateForwarderEdge(2,4));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(2,3));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(2,1));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(2,4));
         
-        graph.addEdge(new StateForwarderEdge(3,5));
-        graph.addEdge(new StateForwarderEdge(3,2));
-        graph.addEdge(new StateForwarderEdge(3,4));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(3,5));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(3,2));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(3,4));
         
-        graph.addEdge(new StateForwarderEdge(4,2));
-        graph.addEdge(new StateForwarderEdge(4,3));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(4,2));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(4,3));
         
-        graph.addEdge(new StateForwarderEdge(5,6));
-        graph.addEdge(new StateForwarderEdge(5,3));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(5,6));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(5,3));
         
-        graph.addEdge(new StateForwarderEdge(6,5));
+        graph.addEdge(new StateForwarderEdge<Integer, Integer>(6,5));
         
-        ExecutionInformation stats = graph.execute(ExecutionConfiguration
-				.withExecutionMode(ExecutionMode.Synchronous()));
+        ExecutionInformation stats = graph.execute();
         
         System.out.println(stats);
         
         //get global shortest paths
-        final HashMap<PathKey,PathValue> globalShortestPaths = graph.aggregate(new GetGlobalShortestPaths());
+        final HashMap<Set<Integer>,PathValue> globalShortestPaths = graph.aggregate(new GetGlobalShortestPaths());
         System.out.println("Global Shortest Paths: "+globalShortestPaths);
         System.out.println("Global Shortest Paths Size: "+globalShortestPaths.size());
         
@@ -88,8 +86,8 @@ public class BetweennessCentrality {
             	int v_on_shortest_path = 0;
             	int v_global_minus = 0;
             	
-            	for (PathKey key : globalShortestPaths.keySet()){
-            		if (key.getSourceId() == v.id() || key.getTargetId() == v.id()) {
+            	for (Set<Integer> key : globalShortestPaths.keySet()){
+            		if (key.contains(v.id())) {
             			v_global_minus++;
             		}else if (globalShortestPaths.get(key).getPath().contains(v.id())) {
             			v_on_shortest_path++;
@@ -109,26 +107,26 @@ public class BetweennessCentrality {
 	
 	
 	//Inner class to aggregate global shortest paths in the graph
-	private class GetGlobalShortestPaths implements AggregationOperation<HashMap<PathKey,PathValue>> {
+	private class GetGlobalShortestPaths implements AggregationOperation<HashMap<Set<Integer>,PathValue>> {
 
 		@Override
-		public HashMap<PathKey,PathValue> aggregate(
-				HashMap<PathKey,PathValue> arg0,
-				HashMap<PathKey,PathValue> arg1) {
-			HashMap<PathKey,PathValue> state0 = (HashMap<PathKey,PathValue>) ((HashMap) arg0).clone();
-			HashMap<PathKey,PathValue> state1 = (HashMap<PathKey,PathValue>) ((HashMap) arg1).clone();
+		public HashMap<Set<Integer>,PathValue> aggregate(
+				HashMap<Set<Integer>,PathValue> arg0,
+				HashMap<Set<Integer>,PathValue> arg1) {
+			HashMap<Set<Integer>,PathValue> state0 = (HashMap<Set<Integer>,PathValue>) ((HashMap) arg0).clone();
+			HashMap<Set<Integer>,PathValue> state1 = (HashMap<Set<Integer>,PathValue>) ((HashMap) arg1).clone();
 			state0.putAll(state1);
 			return state0;
 		}
 
 		@Override
-		public HashMap<PathKey,PathValue> extract(Vertex arg0) {
-			return (HashMap<PathKey,PathValue>) ((HashMap) arg0.state()).clone();
+		public HashMap<Set<Integer>,PathValue> extract(Vertex arg0) {
+			return (HashMap<Set<Integer>,PathValue>) ((HashMap) arg0.state()).clone();
 		}
 
 		@Override
-		public HashMap<PathKey,PathValue> neutralElement() {
-			return new HashMap<PathKey,PathValue>();
+		public HashMap<Set<Integer>,PathValue> neutralElement() {
+			return new HashMap<Set<Integer>,PathValue>();
 		}
 
 	}
