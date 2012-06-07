@@ -95,9 +95,11 @@ public class BetweennessCentrality {
 
 		System.out.println(stats);
 
-		// get global shortest paths. All sortest paths between all vertices
+		// get global shortest paths. All shortest paths between all vertices
 		final HashMap<Set<Integer>, PathValue> globalShortestPaths = graph
 				.aggregate(new GetGlobalShortestPaths());
+		
+		// debug output that is nice to see.
 		System.out.println("Global Shortest Paths: " + globalShortestPaths);
 		System.out.println("Global Shortest Paths Size: "
 				+ globalShortestPaths.size());
@@ -120,13 +122,18 @@ public class BetweennessCentrality {
 
 				for (Set<Integer> key : globalShortestPaths.keySet()) {
 					if (key.contains(v.id())) {
+						// This is a path that the vertex is a start/end point of.
+						// These paths are ignored
 						v_global_minus++;
 					} else if (globalShortestPaths.get(key).getPath()
 							.contains(v.id())) {
-						v_on_shortest_path++; // vertex is on the shortest path
+						// vertex is on the shortest path (passes through the vertex)
+						v_on_shortest_path++;
 					}
 				}
-				// calculate the betweenness centraility
+				// calculate the betweenness centraility 
+				// (all shortest paths the vertex is on divided by the number 
+				// of unique shortest paths)
 				float bc = (float) v_on_shortest_path
 						/ (float) (globalShortestPaths.size() - v_global_minus);
 				System.out.println("Vertex: " + v.id() 
